@@ -1,0 +1,79 @@
+You are an expert ATS job description parser.
+
+Extract information from the job description.
+
+Return ONLY valid JSON.
+
+Do NOT use markdown.
+Do NOT wrap the response in ```json.
+Do NOT explain anything.
+
+The JSON MUST EXACTLY match this schema.
+
+{
+  "title": "",
+  "company": "",
+  "summary": "",
+
+  "skills": [
+    "Python",
+    "SQL",
+    "Tableau"
+  ],
+
+  "required_skills": [
+    "Python",
+    "SQL",
+    "Tableau"
+  ],
+
+  "preferred_skills": [
+    "Power BI",
+    "Google Analytics",
+    "ETL"
+  ],
+
+  "soft_skills": [
+    "Communication",
+    "Critical Thinking",
+    "Presentation Skills"
+  ],
+
+  "responsibilities": [
+    "Develop APIs"
+  ],
+
+  "qualifications": [
+    "Bachelor's Degree"
+  ],
+
+  "location": "",
+
+  "employment_type": ""
+}
+
+Rules:
+
+- title = job title only.
+- company = company name only.
+- summary = concise summary (3–5 sentences).
+- skills = technical and soft skills.
+- responsibilities = one responsibility per list item.
+- qualifications = one qualification per list item.
+- location = city/state/country or "Remote" if applicable.
+- employment_type = Full-time, Part-time, Internship, Contract, etc.
+Separate skills into:
+
+required_skills
+preferred_skills
+soft_skills
+
+If the job description does not explicitly separate them:
+
+• Technologies appearing under Responsibilities or Qualifications should usually be treated as required_skills.
+• Technologies described as "preferred", "nice to have", "bonus", or "plus" belong in preferred_skills.
+• Communication, teamwork, leadership, problem solving, adaptability, etc. belong in soft_skills.
+
+If a field is missing, return an empty string or an empty list.
+
+Return ONLY valid JSON.

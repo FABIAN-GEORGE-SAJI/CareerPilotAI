@@ -1,25 +1,25 @@
 from fastapi import FastAPI
 
+from app.api.routes.health import router as health_router
+from app.core.config import settings
+from app.api.routes.resume import router as resume_router
+from app.api.routes.jobs import router as jobs_router
+from app.api.routes.match import router as match_router
+
 app = FastAPI(
-    title="CareerPilot AI",
-    description="AI-powered Career Assistant for Resume Analysis, ATS Scoring and Interview Preparation",
-    version="1.0.0",
+    title=settings.APP_NAME,
+    version=settings.APP_VERSION,
+    description="AI-powered Career Assistant",
 )
 
+app.include_router(health_router)
+app.include_router(resume_router)
+app.include_router(jobs_router)
+app.include_router(match_router)
 
 @app.get("/")
 async def root():
     return {
-        "project": "CareerPilot AI",
-        "status": "Running",
-        "version": "1.0.0",
-        "message": "Welcome to CareerPilot AI 🚀"
-    }
-
-
-@app.get("/health")
-async def health():
-    return {
-        "status": "healthy",
-        "backend": "online"
+        "message": f"Welcome to {settings.APP_NAME}",
+        "status": "running",
     }
