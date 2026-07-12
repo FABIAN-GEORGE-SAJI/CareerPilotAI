@@ -1,5 +1,3 @@
 __pycache__/
 *.py[cod]
-.envgit add .
-__pycache__/
-*.py[cod]
+.env
