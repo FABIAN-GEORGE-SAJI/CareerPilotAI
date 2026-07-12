@@ -21,6 +21,7 @@ class HybridMatcher:
 
         self.exact = ExactMatcher()
         self.semantic = SemanticMatcher()
+        
 
     async def match(
         self,
@@ -29,6 +30,8 @@ class HybridMatcher:
     ) -> HybridMatchResult:
 
         result = HybridMatchResult()
+
+        
 
         exact_matches = self.exact.match(
             resume_skills,
@@ -39,7 +42,6 @@ class HybridMatcher:
             resume_skills,
             job_skills,
         )
-
         
 
         total_weight = 0.0
@@ -104,3 +106,5 @@ class HybridMatcher:
             )
 
         return result
+    
+    

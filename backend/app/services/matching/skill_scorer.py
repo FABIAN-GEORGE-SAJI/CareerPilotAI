@@ -2,6 +2,9 @@ from app.core.weights import SKILL_WEIGHTS
 
 from app.schemas.job_data import JobDescriptionData
 from app.schemas.resume_data import ResumeData
+from app.services.matching.engine.knowledge.canonicalizer import (
+    Canonicalizer,
+)
 
 from app.services.matching.base_scorer import BaseScorer
 from app.services.matching.engine.matcher.hybrid_matcher import (
@@ -21,6 +24,7 @@ class SkillScorer(BaseScorer):
     def __init__(self):
 
         self.matcher = HybridMatcher()
+        self.canonicalizer = Canonicalizer()
 
     async def score(
         self,
@@ -36,27 +40,46 @@ class SkillScorer(BaseScorer):
     ]:
 
         # ------------------------------------
+        # Canonicalize skills
+        # ------------------------------------
+        canonical_resume_skills = self.canonicalizer.canonicalize(
+            resume.skills
+        )
+
+        canonical_required_skills = self.canonicalizer.canonicalize(
+            job.required_skills
+        )
+
+        canonical_preferred_skills = self.canonicalizer.canonicalize(
+            job.preferred_skills
+        )
+
+        canonical_soft_skills = self.canonicalizer.canonicalize(
+            job.soft_skills
+        )
+
+        # ------------------------------------
         # Required Skills
         # ------------------------------------
         required_result = await self.matcher.match(
-            resume.skills,
-            job.required_skills,
+            canonical_resume_skills,
+            canonical_required_skills,
         )
 
         # ------------------------------------
         # Preferred Skills
         # ------------------------------------
         preferred_result = await self.matcher.match(
-            resume.skills,
-            job.preferred_skills,
+            canonical_resume_skills,
+            canonical_preferred_skills,
         )
 
         # ------------------------------------
         # Soft Skills
         # ------------------------------------
         soft_result = await self.matcher.match(
-            resume.skills,
-            job.soft_skills,
+            canonical_resume_skills,
+            canonical_soft_skills,
         )
 
         # ------------------------------------

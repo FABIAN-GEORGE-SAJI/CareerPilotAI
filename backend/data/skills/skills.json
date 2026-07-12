@@ -1,0 +1,30 @@
+[
+    {
+        "id": "aws",
+        "canonical": "AWS",
+        "aliases": [
+            "Amazon Web Services",
+            "Amazon AWS"
+        ],
+        "category": "Cloud",
+        "description": "Cloud platform"
+    },
+    {
+        "id": "python",
+        "canonical": "Python",
+        "aliases": [
+            "Python3"
+        ],
+        "category": "Programming Language",
+        "description": "Programming language"
+    },
+    {
+        "id": "mysql",
+        "canonical": "MySQL",
+        "aliases": [
+            "SQL Database"
+        ],
+        "category": "Database",
+        "description": "Relational database"
+    }
+]
