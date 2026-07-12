@@ -2,13 +2,16 @@ from app.schemas.hybrid_match_result import HybridMatchResult
 from app.services.matching.engine.matcher.exact_matcher import (
     ExactMatcher,
 )
+from app.services.matching.engine.assignment.greedy_assignment import (
+    GreedyAssignment,
+)
 
 from app.services.matching.engine.matcher.semantic_matcher import (
     SemanticMatcher,
 )
 from app.schemas.skill_match import SkillMatch
-from app.services.matching.engine.policy.similarity_policy import (
-    SimilarityPolicy,
+from app.services.matching.engine.policy.decision_policy import (
+    DecisionPolicy,
 )
 
 
@@ -37,6 +40,8 @@ class HybridMatcher:
             job_skills,
         )
 
+        
+
         total_weight = 0.0
 
         for semantic in semantic_result.matched:
@@ -45,6 +50,8 @@ class HybridMatcher:
 
             if job_skill.lower() in exact_matches:
 
+                decision = DecisionPolicy.evaluate(1.0)
+
                 result.matched.append(
                     SkillMatch(
                         resume_skill=job_skill,
@@ -52,35 +59,40 @@ class HybridMatcher:
                         matched=True,
                         exact=True,
                         similarity=1.0,
-                        relationship=SimilarityPolicy.classify(1.0)[0],
-                        weight=1.0,
+                        relationship=decision.relationship,
+                        weight=decision.weight,
                     )
                 )
 
-                total_weight += 1.0
-                continue
+                total_weight += decision.weight
 
-            relationship, weight = SimilarityPolicy.classify(
+                continue
+                
+
+                
+
+            decision = DecisionPolicy.evaluate(
                 semantic.similarity
             )
-
-            matched = weight > 0
 
             result.matched.append(
                 SkillMatch(
                     resume_skill=semantic.resume_skill,
                     job_skill=semantic.job_skill,
-                    matched=matched,
+                    matched=decision.accepted,
                     exact=False,
                     similarity=semantic.similarity,
-                    relationship=relationship,
-                    weight=weight,
+                    relationship=decision.relationship,
+                    weight=decision.weight,
                 )
             )
 
-            if matched:
-                total_weight += weight
+            if decision.accepted:
+
+                total_weight += decision.weight
+
             else:
+
                 result.missing.append(
                     semantic.job_skill
                 )

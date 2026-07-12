@@ -1,0 +1,46 @@
+category,resume_skill,job_skill,expected
+software,Python,Python,exact
+software,SQL,MySQL,match
+software,AWS,Amazon Web Services,match
+software,Docker,Containerization,match
+software,TensorFlow,Machine Learning,partial
+software,PyTorch,Deep Learning,partial
+software,Git,GitHub,partial
+software,REST API,FastAPI,partial
+software,Java,Spring Boot,partial
+software,React,JavaScript,partial
+software,Python,Java,no_match
+software,SQL,Tableau,no_match
+software,Docker,Figma,no_match
+software,React,Kubernetes,no_match
+
+marketing,SEO,Search Engine Optimization,match
+marketing,PPC,Google Ads,match
+marketing,Content Marketing,Copywriting,partial
+marketing,Email Marketing,Mailchimp,partial
+marketing,Canva,Graphic Design,partial
+marketing,SEO,Accounting,no_match
+
+finance,CPA,Accountant,match
+finance,Excel,Spreadsheet,match
+finance,Power BI,Business Intelligence,partial
+finance,QuickBooks,Accounting Software,partial
+finance,CPA,Java,no_match
+
+healthcare,Doctor,Physician,match
+healthcare,RN,Registered Nurse,match
+healthcare,ICU,Critical Care,match
+healthcare,Surgery,Operation,partial
+healthcare,Doctor,Software Engineer,no_match
+
+data,Statistics,Data Analysis,match
+data,Pandas,Data Analysis,partial
+data,NumPy,Scientific Computing,partial
+data,SQL,Data Warehousing,partial
+data,Python,Machine Learning,partial
+
+general,Leadership,Team Management,partial
+general,Communication,Presentation Skills,partial
+general,Problem Solving,Critical Thinking,partial
+general,Communication,Python,no_match
+general,Leadership,Docker,no_match
