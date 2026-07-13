@@ -1,0 +1,7 @@
+73e19fa (HEAD -> main) Update gitignore
+6aa554f Add project requirements
+3075aab Remove generated Chroma database from repository
+ff4f7ec v1.0 Matching Engine
+6f15238 v1 Foundation complete - benchmark 77.5%
+10d5ea2 Milestone: Hybrid matching engine integration
+c839c8e Initial project structure and FastAPI backend setup

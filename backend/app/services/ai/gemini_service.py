@@ -1,19 +1,27 @@
+import json
+
 from google import genai
-from app.schemas.ai_job import AIJob
-from app.services.mapping.job_mapper import JobMapper
+
 from app.core.config import settings
 
+from app.schemas.ai_cover_letter import AICoverLetter
+from app.schemas.ai_experience_score import AIExperienceScore
+from app.schemas.ai_feedback import AIFeedback
+from app.schemas.ai_job import AIJob
 from app.schemas.ai_resume import AIResume
+from app.schemas.ai_resume_rewrite import AIResumeRewrite
 from app.schemas.ats_result import ATSResult
 from app.schemas.job_data import JobDescriptionData
 from app.schemas.resume_data import ResumeData
 
 from app.services.ai.base import AIService
+
+from app.services.mapping.feedback_mapper import FeedbackMapper
+from app.services.mapping.job_mapper import JobMapper
 from app.services.mapping.resume_mapper import ResumeMapper
 
 from app.utils.json_parser import JSONParser
 from app.utils.prompt_loader import PromptLoader
-from app.schemas.ai_experience_score import AIExperienceScore
 
 
 class GeminiService(AIService):
@@ -21,12 +29,92 @@ class GeminiService(AIService):
     def __init__(self):
 
         self.client = genai.Client(
-            api_key=settings.GEMINI_API_KEY
+            api_key=settings.GEMINI_API_KEY,
         )
 
         self.model = settings.GEMINI_MODEL
 
-    async def generate_text(self, prompt: str) -> str:
+    @staticmethod
+    def _debug_output(
+        title: str,
+        content: str,
+    ) -> None:
+
+        print("\n" + "=" * 80)
+        print(title)
+        print("=" * 80)
+        print(content)
+        print("=" * 80 + "\n")
+
+    
+    async def _generate_json(
+        self,
+        prompt_name: str,
+        payload: dict,
+        title: str,
+    ) -> dict:
+
+        prompt = PromptLoader.load(
+            prompt_name,
+        )
+
+        full_prompt = "\n\n".join([
+            prompt,
+            json.dumps(
+                payload,
+                indent=2,
+                ensure_ascii=False,
+            ),
+        ])
+
+        response = await self.generate_text(
+            full_prompt,
+        )
+
+        self._debug_output(
+            title,
+            response,
+        )
+
+        return JSONParser.parse(
+            response,
+        )
+    
+    async def _generate_from_text(
+        self,
+        prompt_name: str,
+        label: str,
+        text: str,
+        title: str,
+    ) -> dict:
+
+        prompt = PromptLoader.load(
+            prompt_name,
+        )
+
+        full_prompt = "\n\n".join([
+            prompt,
+            f"{label}:",
+            text,
+        ])
+
+        response = await self.generate_text(
+            full_prompt,
+        )
+
+        self._debug_output(
+            title,
+            response,
+        )
+
+        return JSONParser.parse(
+            response,
+        )
+
+    async def generate_text(
+        self,
+        prompt: str,
+    ) -> str:
 
         response = self.client.models.generate_content(
             model=self.model,
@@ -35,99 +123,128 @@ class GeminiService(AIService):
 
         return response.text.strip()
 
-    async def parse_resume(self, text: str) -> ResumeData:
+    async def parse_resume(
+        self,
+        text: str,
+    ) -> ResumeData:
 
-        prompt = PromptLoader.load("resume_parser")
+        data = await self._generate_from_text(
+            prompt_name="resume_parser",
+            label="Resume",
+            text=text,
+            title="RAW GEMINI RESUME RESPONSE",
+        )
 
-        full_prompt = "\n\n".join([
-            prompt,
-            "Resume:",
-            text,
-        ])
+        ai_resume = AIResume(
+            **data,
+        )
 
-        response = await self.generate_text(full_prompt)
+        return ResumeMapper.to_resume_data(
+            ai_resume,
+        )
 
-        # Temporary debugging (remove later)
-        print("\n" + "=" * 80)
-        print("RAW GEMINI RESPONSE")
-        print("=" * 80)
-        print(response)
-        print("=" * 80 + "\n")
+    async def parse_job(
+        self,
+        text: str,
+    ) -> JobDescriptionData:
 
-        data = JSONParser.parse(response)
+        data = await self._generate_from_text(
+            prompt_name="job_parser",
+            label="Job Description",
+            text=text,
+            title="RAW GEMINI JOB RESPONSE",
+        )
 
-        ai_resume = AIResume(**data)
+        ai_job = AIJob(
+            **data,
+        )
 
-        return ResumeMapper.to_resume_data(ai_resume)
+        return JobMapper.to_job_data(
+            ai_job,
+        )
 
-    async def parse_job(self, text: str) -> JobDescriptionData:
-
-        prompt = PromptLoader.load("job_parser")
-
-        full_prompt = "\n\n".join([
-            prompt,
-            "Job Description:",
-            text,
-        ])
-
-        response = await self.generate_text(full_prompt)
-
-        print("\n" + "=" * 80)
-        print("RAW GEMINI JOB RESPONSE")
-        print("=" * 80)
-        print(response)
-        print("=" * 80 + "\n")
-
-        data = JSONParser.parse(response)
-
-        ai_job = AIJob(**data)
-
-        return JobMapper.to_job_data(ai_job)
     async def score_experience(
         self,
         resume: ResumeData,
         job: JobDescriptionData,
     ) -> AIExperienceScore:
 
-        prompt = PromptLoader.load("experience_score")
+        payload = {
+            "resume_experience": [
+                experience.model_dump()
+                for experience in resume.experience
+            ],
+            "job": job.model_dump(),
+        }
 
-        full_prompt = "\n\n".join([
-            prompt,
-            "Resume Experience:",
-            str(resume.experience),
-            "",
-            "Job Description:",
-            str(job),
-        ])
+        data = await self._generate_json(
+            prompt_name="experience_score",
+            payload=payload,
+            title="RAW EXPERIENCE SCORE",
+        )
 
-        response = await self.generate_text(full_prompt)
-
-        print("\n" + "=" * 80)
-        print("RAW EXPERIENCE SCORE")
-        print("=" * 80)
-        print(response)
-        print("=" * 80 + "\n")
-
-        data = JSONParser.parse(response)
-
-        return AIExperienceScore(**data)
-
+        return AIExperienceScore(
+            **data,
+        )
     async def generate_feedback(
         self,
         report: ATSResult,
-    ) -> str:
-        raise NotImplementedError
+    ) -> AIFeedback:
+
+        data = await self._generate_json(
+            prompt_name="feedback_generator",
+            payload=report.model_dump(),
+            title="RAW FEEDBACK",
+        )
+
+        feedback = AIFeedback(
+            **data,
+        )
+
+        return FeedbackMapper.to_feedback(
+            feedback,
+        )
 
     async def rewrite_resume(
         self,
         resume: ResumeData,
         job: JobDescriptionData,
-    ) -> str:
-        raise NotImplementedError
+    ) -> AIResumeRewrite:
+
+        payload = {
+            "resume": resume.model_dump(),
+            "job": job.model_dump(),
+        }
+
+        data = await self._generate_json(
+            prompt_name="resume_rewrite",
+            payload=payload,
+            title="RAW RESUME REWRITE",
+        )
+
+        return AIResumeRewrite(
+            **data,
+        )
 
     async def generate_cover_letter(
         self,
         resume: ResumeData,
         job: JobDescriptionData,
-    ) -> str:
-        raise NotImplementedError
+    ) -> AICoverLetter:
+
+        payload = {
+            "resume": resume.model_dump(),
+            "job": job.model_dump(),
+        }
+
+        data = await self._generate_json(
+            prompt_name="cover_letter",
+            payload=payload,
+            title="RAW COVER LETTER",
+        )
+
+        return AICoverLetter(
+            **data,
+        )
+    
+    

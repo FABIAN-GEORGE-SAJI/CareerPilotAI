@@ -1,0 +1,215 @@
+backend
+├── app
+│   ├── __init__.py
+│   ├── api
+│   │   ├── __init__.py
+│   │   └── routes
+│   │       ├── __init__.py
+│   │       ├── health.py
+│   │       ├── jobs.py
+│   │       ├── match.py
+│   │       └── resume.py
+│   ├── core
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   ├── logging.py
+│   │   └── weights.py
+│   ├── data
+│   ├── database
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   ├── database.py
+│   │   ├── dependencies.py
+│   │   └── session.py
+│   ├── main.py
+│   ├── models
+│   │   ├── __init__.py
+│   │   ├── job.py
+│   │   └── resume.py
+│   ├── prompts
+│   │   ├── __init__.py
+│   │   ├── ats_feedback.txt
+│   │   ├── cover_letter.txt
+│   │   ├── experience_score.txt
+│   │   ├── interview_questions.txt
+│   │   ├── job_parser.txt
+│   │   └── resume_parser.txt
+│   ├── repositories
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   ├── job_repository.py
+│   │   └── resume_repository.py
+│   ├── schemas
+│   │   ├── __init__.py
+│   │   ├── ai_experience_score.py
+│   │   ├── ai_job.py
+│   │   ├── ai_resume.py
+│   │   ├── ats_result.py
+│   │   ├── decision.py
+│   │   ├── embedding_result.py
+│   │   ├── entities.py
+│   │   ├── hybrid_match_result.py
+│   │   ├── job.py
+│   │   ├── job_data.py
+│   │   ├── match.py
+│   │   ├── match_result.py
+│   │   ├── resume.py
+│   │   ├── resume_data.py
+│   │   ├── semantic_match_result.py
+│   │   ├── similarity_level.py
+│   │   ├── skill_entry.py
+│   │   ├── skill_evidence.py
+│   │   └── skill_match.py
+│   ├── services
+│   │   ├── __init__.py
+│   │   ├── ai
+│   │   │   ├── __init__.py
+│   │   │   ├── base.py
+│   │   │   └── gemini_service.py
+│   │   ├── ats
+│   │   │   └── __init__.py
+│   │   ├── chat
+│   │   │   └── __init__.py
+│   │   ├── cover_letter
+│   │   │   └── __init__.py
+│   │   ├── document
+│   │   │   ├── __init__.py
+│   │   │   └── service.py
+│   │   ├── embeddings
+│   │   │   ├── __init__.py
+│   │   │   └── embedding_service.py
+│   │   ├── interview
+│   │   │   └── __init__.py
+│   │   ├── jobs
+│   │   │   ├── parser.py
+│   │   │   └── upload_service.py
+│   │   ├── mapping
+│   │   │   ├── __init__.py
+│   │   │   ├── job_mapper.py
+│   │   │   └── resume_mapper.py
+│   │   ├── matching
+│   │   │   ├── ats_scorer.py
+│   │   │   ├── base_scorer.py
+│   │   │   ├── education_scorer.py
+│   │   │   ├── engine
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── assignment
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   └── greedy_assignment.py
+│   │   │   │   ├── base_matcher.py
+│   │   │   │   ├── embeddings
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── base_provider.py
+│   │   │   │   │   └── sentence_transformer_provider.py
+│   │   │   │   ├── exact_matcher.py
+│   │   │   │   ├── knowledge
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── canonicalizer.py
+│   │   │   │   │   ├── chroma_client.py
+│   │   │   │   │   ├── knowledge_matcher.py
+│   │   │   │   │   ├── knowledge_service.py
+│   │   │   │   │   ├── seed_skills.py
+│   │   │   │   │   └── skill_repository.py
+│   │   │   │   ├── matcher
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── exact_matcher.py
+│   │   │   │   │   ├── hybrid_matcher.py
+│   │   │   │   │   └── semantic_matcher.py
+│   │   │   │   ├── normalizer.py
+│   │   │   │   ├── pipeline.py
+│   │   │   │   ├── policy
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── decision_policy.py
+│   │   │   │   │   └── similarity_policy.py
+│   │   │   │   └── resolver
+│   │   │   │       ├── __init__.py
+│   │   │   │       ├── base_resolver.py
+│   │   │   │       ├── chain.py
+│   │   │   │       └── identity_resolver.py
+│   │   │   ├── experience_scorer.py
+│   │   │   ├── matching_service.py
+│   │   │   ├── project_scorer.py
+│   │   │   ├── recommendation_engine.py
+│   │   │   ├── score_calculator.py
+│   │   │   └── skill_scorer.py
+│   │   ├── parser
+│   │   │   ├── __init__.py
+│   │   │   └── resume_parser.py
+│   │   └── resume
+│   │       ├── extractor.py
+│   │       ├── normalizer.py
+│   │       ├── parser.py
+│   │       ├── pdf_parser.py
+│   │       └── upload_service.py
+│   └── utils
+│       ├── json_parser.py
+│       └── prompt_loader.py
+├── create_database.py
+├── data
+│   ├── careerpilot.db
+│   ├── job_descriptions
+│   │   ├── 043d09c7-bc7e-480f-b288-edfc1e6d7fdf.pdf
+│   │   ├── 1d423235-d223-459c-af70-5aef27d31509.pdf
+│   │   ├── 2f422c30-d1fd-4d95-b496-0cfc778a5e45.pdf
+│   │   ├── 4211f849-b3a9-4811-81ac-3972b6783328.pdf
+│   │   ├── abc3b77a-e7ac-4c56-af25-cb5628050666.pdf
+│   │   ├── c0a2f6d5-7642-4eec-a2c1-b25837f0c115.pdf
+│   │   ├── db77a51a-c91a-4b3b-9300-99079cd7551c.pdf
+│   │   └── df167d45-8de2-4185-a393-e00e2a732a74.pdf
+│   ├── resumes
+│   │   ├── 0174114a-4d4b-4f52-b495-144969625ad5.pdf
+│   │   ├── 138f7dca-67ab-4b7f-a0d4-3e90847f4e86.pdf
+│   │   ├── 235073a1-1af0-4704-bd5f-a9641316db40.pdf
+│   │   ├── 405c789b-f1ce-460c-a211-3ade5cdc5364.pdf
+│   │   ├── 534956c5-7fd6-4e3f-903e-03b6d291563c.pdf
+│   │   ├── 59fcc1c9-b5e5-4fec-901c-1dd7f11bcb08.pdf
+│   │   ├── 5e922fff-4cff-4b86-83b8-194e8a04ac36.pdf
+│   │   ├── 94984c4d-7cc5-49d9-b493-65c44dbc6730.pdf
+│   │   ├── b1ba1f30-27cd-4ca0-a6d1-b5081430fd6b.pdf
+│   │   ├── bf7d5f86-5c7c-4131-bf1c-64535242464f.pdf
+│   │   └── fe18e2fa-11ed-4698-a748-ce7d1ca26581.pdf
+│   ├── skills
+│   │   └── skills.json
+│   └── temp
+├── logs
+│   └── careerpilot.log
+├── requirements.txt
+├── sample_data
+│   ├── jds
+│   │   ├── JD_1_Backend_Software_Engineer.pdf
+│   │   └── JD_2_Data_Analyst.pdf
+│   └── resumes
+│       ├── Resume_1_High_Match.pdf
+│       ├── Resume_2_Partial_Match.pdf
+│       └── leadership_resume.pdf
+├── test_ai_job.py
+├── test_ai_resume.py
+├── test_config.py
+├── test_database.py
+├── test_embeddings.py
+├── test_experience_score.py
+├── test_gemini.py
+├── test_logging.py
+├── test_matching.py
+├── test_skill_scorer.py
+└── tests
+    ├── benchmark
+    │   └── semantic_pairs.csv
+    ├── test_assignment.py
+    ├── test_ats_scorer.py
+    ├── test_canonicalizer.py
+    ├── test_chromadb.py
+    ├── test_decision_policy.py
+    ├── test_embeddings.py
+    ├── test_hybrid_matcher.py
+    ├── test_knowledge_expansion.py
+    ├── test_knowledge_matcher.py
+    ├── test_knowledge_service.py
+    ├── test_resume_parser.py
+    ├── test_semantic_batch.py
+    ├── test_semantic_benchmark.py
+    ├── test_semantic_matcher.py
+    ├── test_similarity_policy.py
+    └── test_skill_scorer.py
+
+43 directories, 170 files

@@ -24,3 +24,9 @@ class JobDescriptionData(BaseModel):
     location: str = ""
 
     employment_type: str = ""
+
+    experience: str = ""
+
+    education: str = ""
+
+    keywords: list[str] = []

@@ -19,4 +19,7 @@ class JobMapper:
             qualifications=ai_job.qualifications,
             location=ai_job.location,
             employment_type=ai_job.employment_type,
+            experience=ai_job.experience,
+            education=ai_job.education,
+            keywords=ai_job.keywords,
         )
