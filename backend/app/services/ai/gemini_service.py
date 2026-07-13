@@ -13,6 +13,8 @@ from app.schemas.ai_resume_rewrite import AIResumeRewrite
 from app.schemas.ats_result import ATSResult
 from app.schemas.job_data import JobDescriptionData
 from app.schemas.resume_data import ResumeData
+from app.schemas.ai_interview_questions import AIInterviewQuestions
+from app.schemas.ai_learning_roadmap import AILearningRoadmap
 
 from app.services.ai.base import AIService
 
@@ -247,4 +249,46 @@ class GeminiService(AIService):
             **data,
         )
     
+    async def generate_interview_questions(
+        self,
+        resume: ResumeData,
+        job: JobDescriptionData,
+    ) -> AIInterviewQuestions:
+
+        payload = {
+            "resume": resume.model_dump(),
+            "job": job.model_dump(),
+        }
+
+        data = await self._generate_json(
+            prompt_name="interview_questions",
+            payload=payload,
+            title="RAW INTERVIEW QUESTIONS",
+        )
+
+        return AIInterviewQuestions(
+            **data,
+        )
     
+    async def generate_learning_roadmap(
+        self,
+        resume: ResumeData,
+        job: JobDescriptionData,
+        report: ATSResult,
+    ) -> AILearningRoadmap:
+
+        payload = {
+            "resume": resume.model_dump(),
+            "job": job.model_dump(),
+            "ats_report": report.model_dump(),
+        }
+
+        data = await self._generate_json(
+            prompt_name="learning_roadmap",
+            payload=payload,
+            title="RAW LEARNING ROADMAP",
+        )
+
+        return AILearningRoadmap(
+            **data,
+        )
