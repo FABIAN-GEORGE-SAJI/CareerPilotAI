@@ -10,6 +10,9 @@ from google.genai.errors import (
     ClientError,
     ServerError,
 )
+from app.api.routes.career_agent import (
+    router as career_agent_router,
+)
 
 from app.core.exceptions import (
     gemini_server_error_handler,
@@ -43,6 +46,9 @@ app.include_router(resume_router)
 app.include_router(jobs_router)
 app.include_router(match_router)
 app.include_router(ai_router)
+app.include_router(
+    career_agent_router,
+)
 
 
 @app.get("/")
