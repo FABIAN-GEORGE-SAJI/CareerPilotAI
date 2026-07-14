@@ -1,6 +1,7 @@
 import shutil
 import uuid
 from pathlib import Path
+from app.core.logging import logger
 
 from fastapi import HTTPException, UploadFile
 
@@ -15,10 +16,16 @@ class DocumentService:
         file: UploadFile,
         destination: Path,
     ):
-        print("=" * 50)
-        print("Filename:", file.filename)
-        print("Content type:", file.content_type)
-        print("=" * 50)
+        logger.info("=" * 50)
+        logger.info(
+            "Filename: %s",
+            file.filename,
+        )
+        logger.info(
+            "Content type: %s",
+            file.content_type,
+        )
+        logger.info("=" * 50)
 
         extension = Path(file.filename).suffix.lower()
 

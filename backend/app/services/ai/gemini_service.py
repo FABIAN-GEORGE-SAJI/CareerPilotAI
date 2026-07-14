@@ -1,8 +1,16 @@
 import json
 
 from google import genai
+import asyncio
+
+from google.genai.errors import (
+    ServerError,
+    ClientError,
+)
 
 from app.core.config import settings
+from app.core.logging import logger
+
 
 from app.schemas.ai_cover_letter import AICoverLetter
 from app.schemas.ai_experience_score import AIExperienceScore
@@ -36,17 +44,18 @@ class GeminiService(AIService):
 
         self.model = settings.GEMINI_MODEL
 
+    
     @staticmethod
     def _debug_output(
         title: str,
         content: str,
     ) -> None:
 
-        print("\n" + "=" * 80)
-        print(title)
-        print("=" * 80)
-        print(content)
-        print("=" * 80 + "\n")
+        logger.info("=" * 80)
+        logger.info(title)
+        logger.info("=" * 80)
+        logger.info(content)
+        logger.info("=" * 80)
 
     
     async def _generate_json(
@@ -118,12 +127,26 @@ class GeminiService(AIService):
         prompt: str,
     ) -> str:
 
-        response = self.client.models.generate_content(
-            model=self.model,
-            contents=prompt,
-        )
+        for attempt in range(3):
 
-        return response.text.strip()
+            try:
+
+                response = self.client.models.generate_content(
+                    model=self.model,
+                    contents=prompt,
+                )
+
+                return response.text.strip()
+
+            except ServerError:
+
+                if attempt == 2:
+                    raise
+
+                await asyncio.sleep(2 ** attempt)
+
+            except ClientError:
+                raise
 
     async def parse_resume(
         self,

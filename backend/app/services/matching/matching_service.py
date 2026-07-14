@@ -1,3 +1,6 @@
+from app.schemas.match_context import MatchContext
+from app.schemas.ats_result import ATSResult
+
 from app.schemas.job_data import JobDescriptionData
 from app.schemas.resume_data import ResumeData
 from app.repositories.job_repository import JobRepository
@@ -25,7 +28,21 @@ class MatchingService:
         self,
         resume_id: int,
         job_id: int,
-    ):
+    ) -> ATSResult:
+
+        context = await self.build_context(
+            resume_id,
+            job_id,
+        )
+
+        return context.report
+
+    async def build_context(
+        self,
+        resume_id: int,
+        job_id: int,
+    ) -> MatchContext:
+
         resume_model = self.resume_repository.get_by_id(
             resume_id,
         )
@@ -36,13 +53,9 @@ class MatchingService:
 
         if resume_model is None:
             raise ValueError("Resume not found.")
-        
+
         if job_model is None:
             raise ValueError("Job description not found.")
-        
-        resume = ResumeData(
-            **resume_model.parsed_data,
-        )
 
         resume = ResumeData(
             **resume_model.parsed_data,
@@ -52,26 +65,13 @@ class MatchingService:
             **job_model.parsed_data,
         )
 
-        print("=" * 60)
-        print("RESUME EDUCATION")
-        print(resume.education)
-
-        print("=" * 60)
-        print("JOB QUALIFICATIONS")
-        print(job.qualifications)
-
-        print("=" * 60)
-        print("RESUME SKILLS")
-        print(resume.skills)
-
-        print("=" * 60)
-        print("JOB SKILLS")
-        print(job.skills)
-        print("=" * 60)
-
         report = await self.ats_scorer.score(
             resume,
             job,
         )
 
-        return report
+        return MatchContext(
+            resume=resume,
+            job=job,
+            report=report,
+        )

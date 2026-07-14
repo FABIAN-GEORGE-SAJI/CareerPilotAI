@@ -1,6 +1,6 @@
 import json
 from json import JSONDecodeError
-
+from app.core.logging import logger
 
 class JSONParser:
     """
@@ -31,11 +31,14 @@ class JSONParser:
 
         except JSONDecodeError as e:
 
-            print("\n" + "=" * 80)
-            print("FAILED TO PARSE JSON")
-            print("=" * 80)
-            print(json_text)
-            print("=" * 80 + "\n")
+            logger.exception(
+                "Failed to parse Gemini JSON response."
+            )
+
+            logger.error(
+                "Raw AI response:\n%s",
+                json_text,
+            )
 
             raise ValueError(
                 f"Invalid JSON returned by AI: {e}"
