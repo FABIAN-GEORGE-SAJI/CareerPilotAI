@@ -5,23 +5,29 @@ __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
+*.so
+*.egg-info/
 
 # ==========================
 # Environment Variables
 # ==========================
 .env
 .env.*
+!.env.example
 
 # ==========================
 # Virtual Environments
 # ==========================
 .venv/
 venv/
+env/
+ENV/
 
 # ==========================
-# VS Code
+# IDE
 # ==========================
 .vscode/
+.idea/
 
 # ==========================
 # Node.js
@@ -34,18 +40,51 @@ node_modules/
 *.log
 
 # ==========================
-# OS Files
-# ==========================
-.DS_Store
-Thumbs.db
-
-# ==========================
-# Python Tool Cache
+# Python Cache
 # ==========================
 .pytest_cache/
 .mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ==========================
+# Build
+# ==========================
+dist/
+build/
+
+# ==========================
+# Database
+# ==========================
+*.db
+*.sqlite3
+
+# ==========================
+# Streamlit
+# ==========================
+.streamlit/secrets.toml
 
 # ==========================
 # ChromaDB
 # ==========================
 backend/data/chroma/
+
+# ==========================
+# Uploads / Generated Files
+# ==========================
+backend/uploads/
+backend/temp/
+frontend/uploads/
+
+# ==========================
+# OS Files
+# ==========================
+.DS_Store
+Thumbs.db
+
+# Database
+backend/data/*.db
+backend/data/*.sqlite3
+backend/data/resumes/
+backend/data/job_descriptions/
