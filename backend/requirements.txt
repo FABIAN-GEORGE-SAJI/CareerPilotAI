@@ -12,3 +12,7 @@ chromadb
 pymupdf
 python-multipart
 httpx
+scikit-learn
+sentence-transformers
+transformers
+torch
