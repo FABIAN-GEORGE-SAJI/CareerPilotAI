@@ -1,19 +1,29 @@
+from pathlib import Path
+import os
+
 from sqlalchemy import create_engine
 
 from app.database.base import Base
-import app.models  # noqa: F401  (registers ORM models on Base.metadata)
-
-DATABASE_URL = "sqlite:///./data/careerpilot.db"
-
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+import app.models  # noqa: F401
 
 
-def init_db() -> None:
+DB_PATH = os.getenv("DATABASE_PATH", "data/careerpilot.db")
+
+Path(DB_PATH).parent.mkdir(parents=True, exist_ok=True)
+
+DATABASE_URL = f"sqlite:///{DB_PATH}"
+
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False},
+)
+
+
+def init_db():
     """
     Single canonical create_all() entry point.
 
     Creates all tables registered on the canonical `app.database.base.Base`
-    metadata (i.e. everything under app/models). Safe to call multiple times;
-    SQLAlchemy only creates tables that don't already exist.
+    metadata.
     """
     Base.metadata.create_all(bind=engine)
