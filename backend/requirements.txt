@@ -1,0 +1,24 @@
+fastapi
+uvicorn
+pydantic
+pydantic-settings
+sqlalchemy
+python-multipart
+requests
+google-genai
+python-dotenv
+pandas
+pypdf
+
+# Auth (used by app/core/security.py, app/schemas/user.py - reachable from
+# app.main via routes/auth.py; missing these breaks import at startup)
+email-validator
+python-jose
+passlib[bcrypt]
+bcrypt<4.1
+
+# Career agent (used by app/services/langchain/* - reachable from app.main
+# via routes/career_agent.py; missing these breaks import at startup)
+langchain
+langchain-core
+langchain-google-genai
