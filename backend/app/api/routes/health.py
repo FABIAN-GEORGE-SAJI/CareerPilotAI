@@ -7,7 +7,7 @@ router = APIRouter(
 
 
 @router.get(
-    "/",
+    "",
     summary="Health check",
     description="Lightweight liveness check used by deployment platforms and the frontend to confirm the API is reachable.",
 )
